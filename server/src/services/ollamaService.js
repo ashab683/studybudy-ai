@@ -80,7 +80,7 @@ export async function checkOllamaHealth() {
 /**
  * Generate a complete explanation from Ollama (non-streaming for Phase 1).
  */
-export async function generateStudyResponse({ prompt, model = DEFAULT_MODEL }) {
+export async function generateStudyResponse({ prompt, model = DEFAULT_MODEL, format = undefined, options = {} }) {
   // Step 1: Health / availability pre-check
   const health = await checkOllamaHealth();
   if (!health.isConnected) {
@@ -101,7 +101,7 @@ export async function generateStudyResponse({ prompt, model = DEFAULT_MODEL }) {
   }
 
   // Step 2: Query Ollama
-  console.log(`[Ollama] Dispatching inference request to model "${model}" at ${OLLAMA_URL}...`);
+  console.log(`[Ollama] Dispatching inference request to model "${model}" (format: ${format || 'text'})...`);
   const startTime = Date.now();
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), TIMEOUT_MS);
@@ -116,10 +116,12 @@ export async function generateStudyResponse({ prompt, model = DEFAULT_MODEL }) {
         model,
         prompt,
         stream: false,
+        format,
         options: {
-          temperature: 0.6,
-          top_p: 0.9,
-          num_predict: 350,
+          temperature: options.temperature ?? 0.6,
+          top_p: options.top_p ?? 0.9,
+          num_predict: options.num_predict ?? 380,
+          ...options,
         },
       }),
       signal: controller.signal,

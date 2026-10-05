@@ -7,42 +7,42 @@ export const MODES = [
     label: 'Explain',
     tagline: 'Deep, structured understanding',
     icon: Lightbulb,
-    activeInPhase1: true,
+    directRoute: null,
   },
   {
     id: 'simplify',
     label: 'Simplify',
     tagline: 'Plain language rewrite',
     icon: Scissors,
-    activeInPhase1: false,
+    directRoute: null,
   },
   {
     id: 'practice',
     label: 'Practice',
     tagline: 'Easy to hard drills',
     icon: Dumbbell,
-    activeInPhase1: false,
-  },
-  {
-    id: 'quiz',
-    label: 'Quiz Me',
-    tagline: '5-question challenge',
-    icon: Trophy,
-    activeInPhase1: false,
+    directRoute: null,
   },
   {
     id: 'examRevision',
     label: 'Exam Revision',
     tagline: 'High-yield cheat sheet',
     icon: FileText,
-    activeInPhase1: false,
+    directRoute: '/revision',
+  },
+  {
+    id: 'quiz',
+    label: 'Quiz Me',
+    tagline: 'Interactive 5-question test',
+    icon: Trophy,
+    directRoute: '/quiz',
   },
   {
     id: 'studyPlan',
     label: 'Study Plan',
     tagline: 'Targeted study schedule',
     icon: Calendar,
-    activeInPhase1: false,
+    directRoute: '/study-plan',
   },
 ];
 
@@ -50,11 +50,11 @@ export default function ModeSelector({ currentMode, onSelectMode }) {
   return (
     <div className="w-full">
       <div className="flex items-center justify-between mb-2">
-        <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+        <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
           Learning Mode
         </label>
-        <span className="text-xs text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full font-medium">
-          Phase 1 Focus: Explain Mode
+        <span className="text-xs text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-100 dark:border-indigo-800/60 px-2 py-0.5 rounded-full font-medium">
+          All 6 Modes Active
         </span>
       </div>
 
@@ -67,23 +67,17 @@ export default function ModeSelector({ currentMode, onSelectMode }) {
             <button
               key={mode.id}
               type="button"
-              onClick={() => {
-                if (mode.activeInPhase1) {
-                  onSelectMode(mode.id);
-                }
-              }}
+              onClick={() => onSelectMode(mode.id)}
               className={`relative flex flex-col items-center text-center p-3 rounded-xl border transition-all ${
                 isSelected
-                  ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm shadow-indigo-200 scale-[1.02]'
-                  : mode.activeInPhase1
-                  ? 'bg-white text-slate-700 border-slate-200 hover:border-indigo-300 hover:bg-indigo-50/50'
-                  : 'bg-slate-50 text-slate-400 border-slate-200 cursor-not-allowed opacity-75'
+                  ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm shadow-indigo-200 dark:shadow-none scale-[1.02]'
+                  : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-500 hover:bg-indigo-50/50 dark:hover:bg-slate-700/50'
               }`}
             >
-              <Icon className={`w-5 h-5 mb-1.5 ${isSelected ? 'text-white' : mode.activeInPhase1 ? 'text-indigo-600' : 'text-slate-400'}`} />
+              <Icon className={`w-5 h-5 mb-1.5 ${isSelected ? 'text-white' : 'text-indigo-600 dark:text-indigo-400'}`} />
               <span className="text-xs font-bold leading-tight">{mode.label}</span>
-              <span className={`text-[10px] mt-0.5 leading-tight ${isSelected ? 'text-indigo-100' : 'text-slate-400'}`}>
-                {mode.activeInPhase1 ? 'Active' : 'Phase 2'}
+              <span className={`text-[10px] mt-0.5 leading-tight ${isSelected ? 'text-indigo-100' : 'text-slate-400 dark:text-slate-400'}`}>
+                {mode.tagline.split(' ')[0]}
               </span>
             </button>
           );

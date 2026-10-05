@@ -1,5 +1,5 @@
 import React from 'react';
-import { Cpu, CheckCircle2, AlertCircle, RefreshCw } from 'lucide-react';
+import { Cpu, RefreshCw } from 'lucide-react';
 
 export default function OllamaStatus({ health, loading, onRefresh }) {
   const isConnected = health?.localAi?.connected;
@@ -7,14 +7,14 @@ export default function OllamaStatus({ health, loading, onRefresh }) {
   const modelInstalled = health?.localAi?.modelInstalled;
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-1.5 sm:gap-2">
       <div
-        className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
+        className={`inline-flex items-center gap-2 px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
           isConnected && modelInstalled
-            ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+            ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/60'
             : isConnected && !modelInstalled
-            ? 'bg-amber-50 text-amber-800 border-amber-200'
-            : 'bg-rose-50 text-rose-800 border-rose-200'
+            ? 'bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-800/60'
+            : 'bg-rose-50 dark:bg-rose-950/40 text-rose-800 dark:text-rose-300 border-rose-200 dark:border-rose-800/60'
         }`}
         title={
           isConnected && modelInstalled
@@ -39,10 +39,12 @@ export default function OllamaStatus({ health, loading, onRefresh }) {
           ></span>
         </span>
 
-        <span className="flex items-center gap-1 font-semibold">
+        <span className="flex items-center gap-1 font-semibold text-[11px] sm:text-xs">
           <Cpu className="w-3.5 h-3.5" />
           {isConnected && modelInstalled ? (
-            <span>Local AI Connected <span className="text-emerald-700 font-mono font-normal">({modelName})</span></span>
+            <span>
+              <span className="hidden sm:inline">Local AI </span>Connected <span className="text-emerald-700 dark:text-emerald-400 font-mono font-normal">({modelName})</span>
+            </span>
           ) : isConnected ? (
             <span>Model Missing <span className="font-mono">({modelName})</span></span>
           ) : (
@@ -55,7 +57,7 @@ export default function OllamaStatus({ health, loading, onRefresh }) {
         <button
           onClick={onRefresh}
           disabled={loading}
-          className="p-1 text-slate-400 hover:text-slate-600 rounded-md transition-colors disabled:opacity-50"
+          className="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors disabled:opacity-50"
           title="Refresh Ollama Connection Status"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />

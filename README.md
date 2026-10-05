@@ -50,15 +50,19 @@ Gemma Open-Weight Model (Local Weights)
 
 ---
 
-## 4. Key Features (Phase 1 MVP)
+## 4. Key Features
 
-- 🧠 **AI Study Assistant (Explain Mode)**: Deep, structured conceptual breakdowns (Simple Explanation, Why It Matters, Real-World Analogy, Step-by-Step Breakdown, Code Examples, Exam Pitfalls, Quick Revision).
-- ⚡ **Local Open-Weight Inference**: Driven by Google's Gemma model running locally via Ollama.
+- 🧠 **AI Study Assistant (Explain & Simplify Modes)**: Deep, structured conceptual breakdowns (Simple Explanation, Why It Matters, Real-World Analogy, Step-by-Step Breakdown, Code Examples, Exam Pitfalls, Quick Revision).
+- 📝 **Simplify Complex Notes**: Paste dense textbook paragraphs or lecture notes to translate them into plain English without losing meaning.
+- 🎯 **Interactive Quiz Mode**: Generate structured multiple-choice quizzes with instant feedback, live score tracking, explanation of mistakes, and retry options.
+- 📋 **High-Yield Exam Revision Sheets**: Quick cheat sheets highlighting core definitions, formulas, key differences, and common exam questions.
+- 📅 **Custom Study Plan Generator**: Generate realistic, day-by-day study roadmaps with interactive task checklists tailored to available study hours.
+- 🔖 **Saved Resources & Bookmarks**: Save explanations, quizzes, revision sheets, and study plans to browser `localStorage` for offline review.
+- 🌙 **Full Dark Mode**: Seamless light/dark theme toggle matching system preferences with persistent storage.
+- ⚡ **Local Open-Weight Inference**: Driven by Google's Gemma model running locally via Ollama with zero external cloud dependencies.
 - 🔌 **Dynamic Ollama Health & Status**: Live connection badge detecting whether Ollama is running and whether the target model is installed.
 - 🛡️ **Actionable Error & Offline Recovery**: Clear terminal commands and retry controls if Ollama is paused or the model is missing.
-- 🕒 **Recent Sessions**: Local session history saved safely in the browser (`localStorage`) for quick topic resumption.
-- 💡 **Interactive Follow-Up Prompts**: Contextual follow-up suggestions (*"Give me another analogy"*, *"Explain more simply"*, *"What are common exam questions?"*).
-- 📱 **Responsive Student-Centric UI**: Clean, accessible layout built with Tailwind CSS, supporting both desktop and mobile devices.
+- 💡 **Interactive Follow-Up Prompts**: Contextual follow-up suggestions (*"Give me an analogy"*, *"Quiz me on this"*, *"Make revision sheet"*, *"Line by line code breakdown"*).
 
 ---
 
@@ -213,7 +217,7 @@ REQUEST_TIMEOUT_MS=120000
 }
 ```
 
-### 2. Study Assistant Explanation
+### 2. Study Assistant Explanation / Revision
 `POST /api/ai/ask`
 
 **Request Body:**
@@ -225,6 +229,8 @@ REQUEST_TIMEOUT_MS=120000
 }
 ```
 
+**Supported Modes:** `explain`, `simplify`, `practice`, `examRevision`
+
 **Response:**
 ```json
 {
@@ -233,6 +239,75 @@ REQUEST_TIMEOUT_MS=120000
   "mode": "explain",
   "subject": "Data Structures",
   "model": "gemma3:4b"
+}
+```
+
+### 3. Generate Interactive Quiz
+`POST /api/ai/quiz`
+
+**Request Body:**
+```json
+{
+  "topic": "Binary Search Trees",
+  "difficulty": "medium",
+  "questionCount": 5
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "topic": "Binary Search Trees",
+  "difficulty": "medium",
+  "model": "gemma3:4b",
+  "quiz": {
+    "title": "Binary Search Trees Quiz",
+    "questions": [
+      {
+        "id": 1,
+        "question": "What is the worst-case lookup time in an unbalanced BST?",
+        "options": ["O(1)", "O(log n)", "O(n)", "O(n^2)"],
+        "correctIndex": 2,
+        "explanation": "In an unbalanced BST, elements can form a degenerate linked list."
+      }
+    ]
+  }
+}
+```
+
+### 4. Generate Study Plan
+`POST /api/ai/study-plan`
+
+**Request Body:**
+```json
+{
+  "subject": "Database Systems",
+  "topics": "ER Modeling, Normalization, SQL, Indexing, Transactions",
+  "hoursPerDay": 3,
+  "days": 7
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "subject": "Database Systems",
+  "model": "gemma3:4b",
+  "studyPlan": {
+    "title": "7-Day Study Schedule: Database Systems",
+    "overview": "Balanced preparation covering foundational schema design to transaction concurrency.",
+    "days": [
+      {
+        "day": 1,
+        "title": "Entity Relationship Modeling & Relational Schema",
+        "focus": "Entities, attributes, cardinality, and mapping to relations",
+        "tasks": ["Read Chapter 2", "Draw ER diagram for library system", "Convert ER diagram into 3NF tables"]
+      }
+    ],
+    "revisionTips": ["Practice SQL queries on LeetCode", "Review ACID properties before exam day"]
+  }
 }
 ```
 

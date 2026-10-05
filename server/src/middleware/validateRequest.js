@@ -38,3 +38,62 @@ export function validateAskRequest(req, res, next) {
 
   next();
 }
+
+export function validateQuizRequest(req, res, next) {
+  const { topic, difficulty, questionCount } = req.body || {};
+
+  if (!topic || typeof topic !== 'string' || topic.trim().length === 0) {
+    return res.status(400).json({
+      success: false,
+      error: 'Please provide a topic to generate a quiz on.',
+      code: 'MISSING_TOPIC',
+    });
+  }
+
+  const cleanTopic = topic.trim().slice(0, 200);
+  const cleanDifficulty = ['easy', 'medium', 'hard'].includes(difficulty) ? difficulty : 'medium';
+  const cleanCount = Math.min(Math.max(parseInt(questionCount, 10) || 5, 2), 8);
+
+  req.validatedQuizInput = {
+    topic: cleanTopic,
+    difficulty: cleanDifficulty,
+    questionCount: cleanCount,
+  };
+
+  next();
+}
+
+export function validateStudyPlanRequest(req, res, next) {
+  const { subject, topics, hoursPerDay, days } = req.body || {};
+
+  if (!subject || typeof subject !== 'string' || subject.trim().length === 0) {
+    return res.status(400).json({
+      success: false,
+      error: 'Please provide a subject for your study plan.',
+      code: 'MISSING_SUBJECT',
+    });
+  }
+
+  let cleanTopics = [];
+  if (Array.isArray(topics)) {
+    cleanTopics = topics.map(t => String(t).trim()).filter(Boolean);
+  } else if (typeof topics === 'string' && topics.trim().length > 0) {
+    cleanTopics = topics.split(/[\n,]+/).map(t => t.trim()).filter(Boolean);
+  }
+
+  if (cleanTopics.length === 0) {
+    cleanTopics = [subject.trim()];
+  }
+
+  const cleanHours = Math.min(Math.max(parseFloat(hoursPerDay) || 3, 1), 12);
+  const cleanDays = Math.min(Math.max(parseInt(days, 10) || 7, 1), 14);
+
+  req.validatedStudyPlanInput = {
+    subject: subject.trim().slice(0, 100),
+    topics: cleanTopics.slice(0, 15),
+    hoursPerDay: cleanHours,
+    days: cleanDays,
+  };
+
+  next();
+}
